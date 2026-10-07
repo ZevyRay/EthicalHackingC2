@@ -1,0 +1,100 @@
+08/11 10:00-13:45 : Pi omzetten naar rubber ducky en leren omgaan van de taal + begin python scripts schrijven
+		-payload.dd is bijna af:
+			*Het runnen van CopyWormAndRunWorm.py is af
+			*Bezig met het maken van backup plan moest het CopyWormAndRunWorm.py falen (script online afhalen)
+		-CopyWormAndRunWorm.py is af
+
+13/11 12:20-14:00 : Werken aan MainWorm.py:
+		-Het automatisch installeren van "keyboard" package
+		-Simpele versie van keylogger en de keystrokes opslaan in een bestand genaamd "data.txt"
+
+13/11 19:00-21:00 : keylogger finetuning:
+		-beter leesbaar
+		-meer geavanceerd maken
+
+13/11 21:30-23:45 : keylogger afwerken & screen logger maken:
+		-keylogger functioneert volledig en makkelijk leesbaar
+		-Screen logger begonnen:
+			*Neemt screenshot van het scherm en slaagt die op met datum en tijd in de naam
+			*Neemt screenshot op interval om de x aantal tijd
+		-Screen logger geïntegreerd in hooft programma
+
+14/11 20:00-22:00 : worm in het systeem verplaatsen en schuilen + proberen op opstarten van pc uitvoeren a.d.h.v. task scheduler:	
+		-CreateHiddenFolder.py is een test file en die maakt een hidden folder in C:\Windows\ met naam
+		 "RubenHidden"
+		-CreateHiddenFolder.py kopieert zichzelf ook naar "RubenHidden"
+		-"RunOnBootScript" zorgt ervoor dat het zichzelf uitvoert bij het opstarten van de computer(niet functionerend)
+
+18/11 12:10-14:25 : Sub scripts implementeren in hoofd worm + proberen killswitch implementeren:
+		-hoofd worm maakt een hidden folder en verplaatst zich naar daar
+
+18/11 19:20-19:30 : killswitch geïmplementeerd
+		-ctrl+alt+k kills the worm
+
+18/11 22:30-23:20 : maak folder in geheime systeem folder waar de screenshots worden bijgehouden  
+
+19/11 09:10-11:00
+    & 11:20-13:00 : Worm bij aanmelden op systeem uitvoeren:
+		-"RunOnBootScript" afgewerkt(functionerend)
+		-Implementeren in worm = op aanmelden zichzelf uitvoeren
+		-Worm voert zichzelf nu uit bij aanmelden op het systeem (deels functionerend)
+
+19/11 17:20-19:30 : task scheduler werkt
+
+21/11 14:30-16:15 : bestanden zippen:
+		-Herstructureren van mappen creatie voor versimpeling van het zippen
+		-sub bestand ZipFiles.py werkt perfect
+
+21/11 17:30-19:10 : oudste log folder zippen:
+		-Alles geïntegreerd van ZipFiles.py in main worm:
+			*Zipt de oudste folder met al de contents erin
+		-Verwijderd na het zippen de oudste folder
+
+18/12 13:20-16:30 : Mail proberen implementeren, fundamentele uitvoeringen wijzigen en executables maken:
+		-Mail implementeren:
+			*stuurt een mail naar mij door van de oudste zip file(logs) => Werkt niet
+		-Herstructureren van de python files:
+			*CopyWormAndRunWorm.py maakt nu de folder structuur en kopieert de Worm rechtstreeks naar het systeem folder zonder eerst het subworm te maken
+		-Experimenteren met het maken van de Worm en de CopyWormAndRunWorm een executable te maken ipv in .pyw en of in .py te werken
+
+25/12 16:00-19:00 : Meer flexibel, opnieuw herstructureren, parameters beschikbaar:
+		-Betere exception handling
+		-De Worm maakt een Json file aan waar parameters in steken die de worm een beetje sturen
+		-De worm is geherstructureerd naar de Json file
+		-Json file bevat:
+			"TimeBetweenEachScreenshot" : ? (per seconden, 1 = 1 seconden)
+		        "LogKeys" : ? (Boolean)
+        		"LogScreen" : ? (Boolean)
+       			"Logging" : ? (Boolean)
+        		"EnableKillSwitch" : ? (Boolean)	
+
+26/12 13:00-16:00 : Mail implementeren en testen:
+		-SendMail.py is een test environment om het sturen van mails:
+			*Het begrijpen van Gmail SMTP
+			*Een standaard mail versturen			
+      19:00:22:00 : Mail implementeren, keyLog herschrijven:
+		-In de SendMail.py:
+			*Mail versturen met attachment
+			*Mail versturen met als titel de gebruiker van het computer systeem en als content de datum van wanneer de mail verzonden is
+		-De keylog functie is de worm herschreven waarbij al de elif's zijn vervangen door een keymap. in plaats van 16 elif's is er nu 1 if.
+
+27/12 13:30-17:30 : Mail implementeren, tweaken en finetuning, opnieuw proberen executables te maken:
+		-Mail implementeren in de worm. Als er een folder was van de vorige sessie dan wordt die gezipt, doorgestuurd en dan vervolgens verwijderd.
+		-Worm optimaliseren en verfijnen
+		-Opnieuw executables maken:
+			*Succesvol executable gemaakt =>
+				*Niet mogelijk te gebruiken sinds de rubberDucky usb te weinig plaats heeft voor die hier in op te slaan met de manier van overdracht
+      19:30-20:30 : debuggen:	
+		-Mail werkt perfect
+		-Testen op meerdere apparaten
+		-Manier van initieel uitvoeren van worm bij injectie veranderen zodat de nodige imports geïnstalleerd kunnen worden:
+			*De worm wordt in een detached window geopend die de terminal window kopieert
+
+28/12 14:50-16:00 : Afwerken, finale versie.
+		-Finetuning
+		-Testen:
+			*Werkt perfect, alle functies inbegrepen
+
+
+new LOG 26-27:
+
