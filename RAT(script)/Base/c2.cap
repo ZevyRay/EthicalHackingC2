@@ -1,0 +1,15 @@
+   # Verbind met de IRC server
+   set c2.server localhost:6697
+   set c2.server.tls true
+   set c2.server.tls.verify false
+
+   set c2.channel.control "#control"
+   set c2.channel.events "#events"
+   set c2.channel.output "#output"
+
+   set c2.nick "bettercap_bot"   
+   set c2.operator "bettercap_admin"
+
+   c2 on
+
+   # start with:    sudo bettercap -caplet c2.cap

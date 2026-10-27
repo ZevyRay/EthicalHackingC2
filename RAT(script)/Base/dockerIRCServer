@@ -1,0 +1,1 @@
+      docker run --name ircd --restart unless-stopped -p 6667:6667 -p 6697:6697 inspircd/inspircd-docker

