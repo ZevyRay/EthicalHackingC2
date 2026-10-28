@@ -98,11 +98,11 @@ def receiver(sock):
                             last_file_data['name'] = fname
                             last_file_data['data'] = b64data
                             size = len(base64.b64decode(b64data))
-                            print(f'\n[BESTAND ONTVANGEN] {fname} ({size} bytes) — typ "save {fname}" om op te slaan')
+                            print(f'\r[BESTAND ONTVANGEN] {fname} ({size} bytes) — typ "save {fname}" om op te slaan')
                         else:
-                            print(f'\n[{sender}] {msg}')
+                            print(f'\r[{sender}] {msg}')
                     else:
-                        print(f'\n[{sender}] {msg}')
+                        print(f'\r[{sender}] {msg}')
 
                     print('> ', end='', flush=True)
         except Exception:
